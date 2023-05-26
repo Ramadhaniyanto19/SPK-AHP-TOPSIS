@@ -90,10 +90,27 @@ class Penilaian_model extends CI_Model
         return $query->result();
     }
 
-    public function get_desc_subkriteria(){
-        $query = $this->db->query("SELECT DISTINCT deskripsi FROM sub_kriteria s where s.id_kriteria = kriteria.id_kriteria ");
+    public function get_subC1(){
+        $query = $this->db->query("SELECT  deskripsi FROM sub_kriteria as s JOIN kriteria on s.id_kriteria = kriteria.id_kriteria where kode_kriteria ='C1'");
         return $query->result();
     }    
+    public function get_subC2(){
+        $query = $this->db->query("SELECT  deskripsi FROM sub_kriteria as s JOIN kriteria on s.id_kriteria = kriteria.id_kriteria where kode_kriteria ='C2'");
+        return $query->result();
+    }    
+    public function get_subC3(){
+        $query = $this->db->query("SELECT  deskripsi FROM sub_kriteria as s JOIN kriteria on s.id_kriteria = kriteria.id_kriteria where kode_kriteria ='C3'");
+        return $query->result();
+    }    
+    public function get_subC4(){
+        $query = $this->db->query("SELECT  deskripsi FROM sub_kriteria as s JOIN kriteria on s.id_kriteria = kriteria.id_kriteria where kode_kriteria ='C4'");
+        return $query->result();
+    }    
+
+    // public function get_kd_kriteria(){
+    //     $query = $this->db->query("SELECT kode_kriteria FROM kriteria WHERE kode_kriteria != null");
+    //     return $query->result();
+    // }
 
     //menyimpan data dari proses import file excel
     public function import_excel($data)

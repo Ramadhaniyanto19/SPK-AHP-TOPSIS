@@ -154,7 +154,7 @@
 				$jumlah_matrik_baris = $this->ahp_get_jumlah_matrik_baris($matrik_baris);
 				$hasil_tabel_konsistensi = $this->ahp_get_tabel_konsistensi($jumlah_matrik_baris, $prioritas);
 				if ($this->ahp_uji_konsistensi($hasil_tabel_konsistensi)) {
-					$this->session->set_flashdata('message', '<div class="alert alert-success" role="alert">Nilai perbandingan : KONSISTEN!</div>');
+					$this->session->set_flashdata('message2', '<div class="alert alert-danger" role="alert">Silakan cek Nilai konsistensi dipaling bawah hingga menjadi konsisten!!</div>');
 					$i = 0;
 					foreach ($data['kriteria'] as $row) {
 						$params = array(
@@ -488,10 +488,10 @@
 				<td width="100">CR <= 0.1</td>';
 					if ($cr <= 0.1) {
 						$list_data5 .= '
-				<td>Konsisten</td>';
+				<td class="text-success"><h3><b>Konsisten<b></h3></td>';
 					} else {
 						$list_data5 .= '
-				<td>Tidak Konsisten</td>';
+				<td class="text-danger"><b><h3>Tidak Konsisten<b></h3></td>';
 					}
 					$list_data5 .= '
 			</tr>

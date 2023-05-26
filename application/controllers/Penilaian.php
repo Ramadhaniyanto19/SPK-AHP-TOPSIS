@@ -306,104 +306,145 @@ class Penilaian extends CI_Controller
 
 
     private function addDropdownValidation($sheet, $column, $options)
-{
-    // Mengambil total baris data
-    $lastRow = $sheet->getHighestRow();
+    {
+        // Mengambil total baris data
+        $lastRow = $sheet->getHighestRow();
 
-    // Mengatur validasi data untuk sel kolom
-    $validation = $sheet->getCell($column . '2')->getDataValidation();
-    $validation->setType(DataValidation::TYPE_LIST);
-    $validation->setErrorStyle(DataValidation::STYLE_STOP);
-    $validation->setShowDropDown(true);
-    $validation->setErrorTitle('Input error');
-    $validation->setError('Please select a value from the list.');
-    $validation->setPromptTitle('Pick from list');
-    $validation->setPrompt('Please pick a value from the dropdown list.');
+        // Mengatur validasi data untuk sel kolom
+        $validation = $sheet->getCell($column . '2')->getDataValidation();
+        $validation->setType(DataValidation::TYPE_LIST);
+        $validation->setErrorStyle(DataValidation::STYLE_STOP);
+        $validation->setShowDropDown(true);
+        $validation->setErrorTitle('Input error');
+        $validation->setError('Please select a value from the list.');
+        $validation->setPromptTitle('Pick from list');
+        $validation->setPrompt('Please pick a value from the dropdown list.');
 
-    // Mengatur opsi pilihan untuk dropdown
-    $optionString = implode(',', $options);
-    $validation->setFormula1('"' . $optionString . '"');
+        // Mengatur opsi pilihan untuk dropdown
+        $optionString = implode(',', $options);
+        $validation->setFormula1('"' . $optionString . '"');
 
-    // Menerapkan validasi data ke setiap sel di kolom
-    for ($row = 2; $row <= $lastRow; $row++) {
-        $cell = $sheet->getCell($column . $row);
-        $cell->setDataValidation(clone $validation);
+        // Menerapkan validasi data ke setiap sel di kolom
+        for ($row = 4; $row <= $lastRow; $row++) {
+            $cell = $sheet->getCell($column . $row);
+            $cell->setDataValidation(clone $validation);
+        }
     }
+
+
+    public function export()
+    {
+        //mengambil id_kelas dari user yang sedang login
+        $id_kelas = $this->session->userdata('id_kelas');
+
+        //mengambil data alternatif berdasarkan id kelas user yang sedang login
+        $list_alternatif = $this->Penilaian_model->export($id_kelas);
+        $list_subkriteria_C1 = $this->Penilaian_model->get_subC1();
+        $list_subkriteria_C2 = $this->Penilaian_model->get_subC2();
+        $list_subkriteria_C3 = $this->Penilaian_model->get_subC3();
+        $list_subkriteria_C4 = $this->Penilaian_model->get_subC4();
+
+        // Membuat objek Spreadsheet
+        $spreadsheet = new Spreadsheet();
+
+
+        // Membuat objek Worksheet
+        $sheet = $spreadsheet->getActiveSheet();
+
+        // Mengatur judul kolom
+        // $sheet->setCellValue('A1', 'Khusus bagian kolom C3 s/d F3 Silahkan pilih salah satu saja');
+        // $sheet->setCellValue('A1', 'ID Alternatif');
+        $sheet->setCellValue('A1', 'ID Alternatif');
+        $sheet->setCellValue('B1', 'Nama Alternatif');
+        $sheet->setCellValue('C1', 'Nilai Raport (C1)');
+        $sheet->setCellValue('D1', 'Nilai Etika (C2)');
+        $sheet->setCellValue('E1', 'Nilai Kehadiran (C3)');
+        $sheet->setCellValue('F1', 'Nilai Ekstrakulikuler (C4)');
+
+        $list_subkriteria_C1_options = [];
+        foreach ($list_subkriteria_C1 as $subkriteria) {
+            $list_subkriteria_C1_options[] = $subkriteria->deskripsi;
+        }
+        $list_subkriteria_C2_options = [];
+        foreach ($list_subkriteria_C2 as $subkriteria) {
+            $list_subkriteria_C2_options[] = $subkriteria->deskripsi;
+        }
+        $list_subkriteria_C3_options = [];
+        foreach ($list_subkriteria_C3 as $subkriteria) {
+            $list_subkriteria_C3_options[] = $subkriteria->deskripsi;
+        }
+        $list_subkriteria_C4_options = [];
+        foreach ($list_subkriteria_C4 as $subkriteria) {
+            $list_subkriteria_C4_options[] = $subkriteria->deskripsi;
+        }
+    
+   $i = 2;
+foreach ($list_alternatif as $alternatif) {
+    $sheet->setCellValue('A' . $i, $alternatif->id_alternatif);
+    $sheet->setCellValue('B' . $i, $alternatif->nama);
+    // $sheet->setCellValue('C' . $i);
+    $i++;
 }
+$this->addDropdownValidation($sheet, 'C' , $list_subkriteria_C1_options);
+$this->addDropdownValidation($sheet, 'D' , $list_subkriteria_C2_options);
+$this->addDropdownValidation($sheet, 'E' , $list_subkriteria_C3_options);
+$this->addDropdownValidation($sheet, 'F' , $list_subkriteria_C4_options);
+// $this->addDropdownValidation($sheet, 'D'. $i, $list_subkriteria_options);
+// $this->addDropdownValidation($sheet, 'E'. $i, $list_subkriteria_options);
+// $this->addDropdownValidation($sheet, 'F'. $i, $list_subkriteria_options);
 
 
-public function export()
-{
-    //mengambil id_kelas dari user yang sedang login
-    $id_kelas = $this->session->userdata('id_kelas');
-
-    //mengambil data alternatif berdasarkan id kelas user yang sedang login
-    $list_alternatif = $this->Penilaian_model->export($id_kelas);
-    $list_subkriteria = $this->Penilaian_model->get_desc_subkriteria();
-
-    // Membuat objek Spreadsheet
-    $spreadsheet = new Spreadsheet();
 
 
-    // Membuat objek Worksheet
-    $sheet = $spreadsheet->getActiveSheet();
 
-    // Mengatur judul kolom
-    $sheet->setCellValue('A1', 'Khusus bagian kolom C3 s/d F3 Silahkan pilih salah satu saja');
-    $sheet->setCellValue('A1', 'ID Alternatif');
-    $sheet->setCellValue('A3', 'ID Alternatif');
-    $sheet->setCellValue('B3', 'Nama Alternatif');
-    $sheet->setCellValue('C3', 'Nilai Raport (C1)');
-    $sheet->setCellValue('D3', 'Nilai Etika (C2)');
-    $sheet->setCellValue('E3', 'Nilai Kehadiran (C3)');
-    $sheet->setCellValue('F3', 'Nilai Ekstrakulikuler (C4)');
 
-    //mengaktifkan autosize berdasarkan data pada setiap kolomnya
-    $sheet->getColumnDimension('A')->setAutoSize(true);
-    $sheet->getColumnDimension('B')->setAutoSize(true);
-    $sheet->getColumnDimension('C')->setAutoSize(true);
-    $sheet->getColumnDimension('D')->setAutoSize(true);
-    $sheet->getColumnDimension('E')->setAutoSize(true);
-    $sheet->getColumnDimension('F')->setAutoSize(true);
+        //mengaktifkan autosize berdasarkan data pada setiap kolomnya
+        $sheet->getColumnDimension('A')->setAutoSize(true);
+        $sheet->getColumnDimension('B')->setAutoSize(true);
+        $sheet->getColumnDimension('C')->setAutoSize(true);
+        $sheet->getColumnDimension('D')->setAutoSize(true);
+        $sheet->getColumnDimension('E')->setAutoSize(true);
+        $sheet->getColumnDimension('F')->setAutoSize(true);
 
-    // Mengisi data pada kolom Nama
-      $i = 4;
-        foreach ($list_alternatif as $alternatif) {
-            $sheet->setCellValue('A' . $i, $alternatif->id_alternatif);
-            $sheet->setCellValue('B' . $i, $alternatif->nama);
-            $i++;
-        }
 
-        foreach($list_subkriteria as $gs){
-            $sheet->setCellValue('C' . $i, $gs->deskripsi );
-            $i++;
-        }
+            // foreach($list_subkriteria as $gs){
+            //     $sheet->setCellValue('C' . $i, $gs->deskripsi );
+            //     $i++;
+            // }
+            
+        // Menambahkan pilihan pada kolom Hobi
         
-    // // Menambahkan pilihan pada kolom Hobi
-    $hobbies = $list_subkriteria;// Daftar pilihan hobi
-    $this->addDropdownValidation($sheet, 'C', $hobbies);
+        //  $options = $this->Penilaian_model->get_desc_subkriteria();
+        // foreach($options as $op){
+        //     $this->addDropdownValidation('C'. $i, $op);
+        //     $i++;
+        // }
+        // foreach($list_subkriteria as $ls){
+        // $test = $sheet->setCellValue('C' . $i, $ls->deskripsi);// Daftar pilihan hobi
+        // $this->addDropdownValidation($sheet, 'C', $test);
+        // }
 
-    // Menambahkan pilihan pada kolom Pekerjaan
-    // $jobs = ['Engineer', 'Teacher', 'Doctor']; // Daftar pilihan pekerjaan
-    // $this->addDropdownValidation($sheet, 'C', $jobs);
+        // Menambahkan pilihan pada kolom Pekerjaan
+        // $jobs = ['Engineer', 'Teacher', 'Doctor']; // Daftar pilihan pekerjaan
+        // $this->addDropdownValidation($sheet, 'C', $jobs);
 
-    // Mengatur lebar kolom
-    // $sheet->getColumnDimension('A')->setWidth(20);
-    // $sheet->getColumnDimension('B')->setWidth(20);
-    // $sheet->getColumnDimension('C')->setWidth(20);
+        // Mengatur lebar kolom
+        // $sheet->getColumnDimension('A')->setWidth(20);
+        // $sheet->getColumnDimension('B')->setWidth(20);
+        // $sheet->getColumnDimension('C')->setWidth(20);
 
-    // Menyimpan file Excel
-    $writer = new Xlsx($spreadsheet);
-    $filename = 'excel_with_dropdown.xlsx';
-    $writer->save($filename);
+        // Menyimpan file Excel
+        $writer = new Xlsx($spreadsheet);
+        $filename = 'excel_with_dropdown.xlsx';
+        $writer->save($filename);
 
-    // Mengarahkan pengguna untuk mengunduh file Excel
-    header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-    header('Content-Disposition: attachment;filename="'.$filename.'"');
-    header('Cache-Control: max-age=0');
-    $writer->save('php://output');
-    exit;
-}
+        // Mengarahkan pengguna untuk mengunduh file Excel
+        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        header('Content-Disposition: attachment;filename="'.$filename.'"');
+        header('Cache-Control: max-age=0');
+        $writer->save('php://output');
+        exit;
+    }
 
-
+      
 }

@@ -8,7 +8,8 @@
 	</a>
 </div>
 
-<?= $this->session->flashdata('message'); ?> 
+
+<?= $this->session->flashdata('message2'); ?> 
 
 <div class="alert alert-info">
 	Silahkan isi terlebih dahulu nilai kriteria menggunakan perbandingan berpasangan berdasarkan skala perbandingan 1-9 (sesuai teori) kemudian klik <b>SIMPAN</b>. Setelah itu klik <b>CEK KONSISTENSI</b> untuk melakukan pembobotan preferensi dengan menggunakan metode AHP.
