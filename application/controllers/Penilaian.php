@@ -389,11 +389,6 @@ $this->addDropdownValidation($sheet, 'C' , $list_subkriteria_C1_options);
 $this->addDropdownValidation($sheet, 'D' , $list_subkriteria_C2_options);
 $this->addDropdownValidation($sheet, 'E' , $list_subkriteria_C3_options);
 $this->addDropdownValidation($sheet, 'F' , $list_subkriteria_C4_options);
-// $this->addDropdownValidation($sheet, 'D'. $i, $list_subkriteria_options);
-// $this->addDropdownValidation($sheet, 'E'. $i, $list_subkriteria_options);
-// $this->addDropdownValidation($sheet, 'F'. $i, $list_subkriteria_options);
-
-
 
 
 
@@ -407,32 +402,7 @@ $this->addDropdownValidation($sheet, 'F' , $list_subkriteria_C4_options);
         $sheet->getColumnDimension('F')->setAutoSize(true);
 
 
-            // foreach($list_subkriteria as $gs){
-            //     $sheet->setCellValue('C' . $i, $gs->deskripsi );
-            //     $i++;
-            // }
-            
-        // Menambahkan pilihan pada kolom Hobi
         
-        //  $options = $this->Penilaian_model->get_desc_subkriteria();
-        // foreach($options as $op){
-        //     $this->addDropdownValidation('C'. $i, $op);
-        //     $i++;
-        // }
-        // foreach($list_subkriteria as $ls){
-        // $test = $sheet->setCellValue('C' . $i, $ls->deskripsi);// Daftar pilihan hobi
-        // $this->addDropdownValidation($sheet, 'C', $test);
-        // }
-
-        // Menambahkan pilihan pada kolom Pekerjaan
-        // $jobs = ['Engineer', 'Teacher', 'Doctor']; // Daftar pilihan pekerjaan
-        // $this->addDropdownValidation($sheet, 'C', $jobs);
-
-        // Mengatur lebar kolom
-        // $sheet->getColumnDimension('A')->setWidth(20);
-        // $sheet->getColumnDimension('B')->setWidth(20);
-        // $sheet->getColumnDimension('C')->setWidth(20);
-
         // Menyimpan file Excel
         $writer = new Xlsx($spreadsheet);
         $filename = 'excel_with_dropdown.xlsx';

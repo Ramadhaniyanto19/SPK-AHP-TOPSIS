@@ -83,12 +83,12 @@ class Penilaian_model extends CI_Model
         $query = $this->db->query("SELECT id_alternatif, nama FROM alternatif WHERE id_kelas ='$id_kelas' and id_alternatif NOT IN (SELECT id_alternatif FROM penilaian)");
         return $query->result();
     }
-
     public function export($id_kelas)
     {
         $query = $this->db->query("SELECT id_alternatif, nama FROM alternatif WHERE id_kelas ='$id_kelas' and id_alternatif NOT IN (SELECT id_alternatif FROM penilaian)");
         return $query->result();
     }
+
 
     public function get_subC1(){
         $query = $this->db->query("SELECT  deskripsi FROM sub_kriteria as s JOIN kriteria on s.id_kriteria = kriteria.id_kriteria where kode_kriteria ='C1'");
@@ -106,6 +106,10 @@ class Penilaian_model extends CI_Model
         $query = $this->db->query("SELECT  deskripsi FROM sub_kriteria as s JOIN kriteria on s.id_kriteria = kriteria.id_kriteria where kode_kriteria ='C4'");
         return $query->result();
     }    
+    // public function get_subC5(){
+    //     $query = $this->db->query("SELECT  deskripsi FROM sub_kriteria as s JOIN kriteria on s.id_kriteria = kriteria.id_kriteria where kode_kriteria ='C5'");
+    //     return $query->result();
+    // }    
 
     // public function get_kd_kriteria(){
     //     $query = $this->db->query("SELECT kode_kriteria FROM kriteria WHERE kode_kriteria != null");

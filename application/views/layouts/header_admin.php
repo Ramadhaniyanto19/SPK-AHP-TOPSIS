@@ -106,21 +106,72 @@
              <span>Data Penilaian</span></a>
          </li>
 
-         <li class="nav-item <?php if ($page == 'Perhitungan') {
+         <!-- <li class="nav-item <?php if ($page == 'Perhitungan') {
                                 echo 'active';
                               } ?>">
            <a class="nav-link" href="<?= base_url('Perhitungan'); ?>">
              <i class="fas fa-fw fa-calculator"></i>
-             <span>Data Perhitungan</span></a>
+             <span>Data Perhitungan TOPSIS</span></a>
          </li>
-
+         
          <li class="nav-item <?php if ($page == 'Hasil') {
                                 echo 'active';
                               } ?>">
            <a class="nav-link" href="<?= base_url('Perhitungan/hasil'); ?>">
              <i class="fas fa-fw fa-chart-area"></i>
-             <span>Data Hasil Akhir</span></a>
+             <span>Data Hasil Akhir TOPSIS</span></a>
+         </li> -->
+<!-- 
+         <li class="nav-item <?php if ($page == 'Perhitungan_saw') {
+           echo 'active';
+          } ?>">
+           <a class="nav-link" href="<?= base_url('Perhitungan_saw'); ?>">
+             <i class="fas fa-fw fa-calculator"></i>
+             <span>Data Perhitungan SAW</span></a>
          </li>
+
+         <li class="nav-item <?php if ($page == 'Hasil_Saw') {
+                                echo 'active';
+                              } ?>">
+           <a class="nav-link" href="<?= base_url('Perhitungan_saw/hasil_saw'); ?>">
+             <i class="fas fa-fw fa-chart-area"></i>
+             <span>Data Hasil Akhir SAW</span></a>
+         </li> -->
+         <li class="nav-item dropdown <?php if ($page == 'Perhitungan' || $page == 'Hasil') { echo 'active'; } ?>">
+              <a class="nav-link dropdown-toggle" href="#" id="sawdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  <i class="fas fa-fw fa-calculator"></i>
+                  <span>Data Metode TOPSIS</span>
+              </a>
+              <div class="dropdown-menu" aria-labelledby="sawdown">
+                  <a class="dropdown-item <?php if ($page == 'Perhitungan') { echo 'active'; } ?>" href="<?= base_url('Perhitungan'); ?>">
+                      <i class="fas fa-fw fa-calculator"></i>
+                      <span>Perhitungan TOPSIS</span>
+                  </a>
+                  <a class="dropdown-item <?php if ($page == 'Hasil') { echo 'active'; } ?>" href="<?= base_url('Perhitungan/hasil'); ?>">
+                      <i class="fas fa-fw fa-chart-area"></i>
+                      <span>Data Hasil Akhir TOPSIS</span>
+                  </a>
+              </div>
+          </li>
+
+         <li class="nav-item dropdown <?php if ($page == 'Perhitungan_saw' || $page == 'Hasil_Saw') { echo 'active'; } ?>">
+              <a class="nav-link dropdown-toggle" href="#" id="sawDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  <i class="fas fa-fw fa-calculator"></i>
+                  <span>Data Metode SAW</span>
+              </a>
+              <div class="dropdown-menu" aria-labelledby="sawDropdown">
+                  <a class="dropdown-item <?php if ($page == 'Perhitungan_saw') { echo 'active'; } ?>" href="<?= base_url('Perhitungan_saw'); ?>">
+                      <i class="fas fa-fw fa-calculator"></i>
+                      <span>Perhitungan SAW</span>
+                  </a>
+                  <a class="dropdown-item <?php if ($page == 'Hasil_Saw') { echo 'active'; } ?>" href="<?= base_url('Perhitungan_saw/hasil_saw'); ?>">
+                      <i class="fas fa-fw fa-chart-area"></i>
+                      <span>Data Hasil Akhir SAW</span>
+                  </a>
+              </div>
+          </li>
+
+         
        <?php endif; ?>
 
        <?php if ($this->session->userdata('id_user_level') == '2') : ?>

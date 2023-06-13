@@ -301,32 +301,17 @@
 			return $matrik_baris;
 		}
 
-		public function ahp_get_jumlah_matrik_baris($matrik_normalisasi)
-			{
-					$jumlah_baris = array();
-					 
-					for ($i = 0; $i < count($matrik_normalisasi); $i++) {
-						$jumlah_baris[$i] = 0;
-
-						for ($j = 0; $j < count($matrik_normalisasi[$i]); $j++) {
-							$jumlah_baris[$i] += $matrik_normalisasi[$i][$j];
-						}
+		public function ahp_get_jumlah_matrik_baris($matrik_baris)
+		{
+			$jumlah_baris = array();
+			for ($i = 0; $i < count($matrik_baris); $i++) {
+				$jumlah_baris[$i] = 0;
+				for ($ii = 0; $ii < count($matrik_baris); $ii++) {
+					$jumlah_baris[$i] = $jumlah_baris[$i] + $matrik_baris[$i][$ii];
 				}
-
-			return $jumlah_baris;
 			}
-
-		// public function ahp_get_jumlah_matrik_baris($matrik_baris)
-		// {
-		// 	$jumlah_baris = array();
-		// 	for ($i = 0; $i < count($matrik_baris); $i++) {
-		// 		$jumlah_baris[$i] = 0;
-		// 		for ($ii = 0; $ii < count($matrik_baris); $ii++) {
-		// 			$jumlah_baris[$i] = $jumlah_baris[$i] + $matrik_baris[$i][$ii];
-		// 		}
-		// 	}
-		// 	return $jumlah_baris;
-		// }
+			return $jumlah_baris;
+		}
 
 		public function ahp_get_tabel_konsistensi($matrik, $prioritas)
 		{
@@ -483,7 +468,7 @@
 			} else {
 				$ir = $ir[14];
 			}
-			$cr = number_format($ci / $ir, 4);
+			$cr = number_format($ci / $ir, 5);
 
 			$list_data5 = '';
 			$list_data5 .= '<table class="table">
@@ -493,11 +478,11 @@
 			</tr>
 			<tr>
 				<td width="100">λ maks</td>
-				<td>= ' . number_format($lambda_maks, 3) . '</td>
+				<td>= ' . number_format($lambda_maks, 5) . '</td>
 			</tr>
 			<tr>
 				<td width="100">CI</td>
-				<td>= ' . number_format($ci, 3) . '</td>
+				<td>= ' . number_format($ci, 5) . '</td>
 			</tr>
 			<tr>
 				<td width="100">CR</td>

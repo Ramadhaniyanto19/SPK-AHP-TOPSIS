@@ -28,6 +28,12 @@ class Perhitungan_model extends CI_Model
         return $query->result();
     }
 
+    public function get_hasil_saw($id_kelas)
+    {
+        $query = $this->db->query("SELECT * FROM hasil_saw inner join alternatif on hasil_saw.id_alternatif = alternatif.id_alternatif WHERE alternatif.id_kelas = '$id_kelas' order by hasil_saw.nilai DESC ;");
+        return $query->result();
+    }
+
     public function get_hasil_alternatif($id_alternatif)
     {
         $query = $this->db->query("SELECT * FROM alternatif WHERE id_alternatif='$id_alternatif';");
@@ -48,9 +54,21 @@ class Perhitungan_model extends CI_Model
         return $result;
     }
 
+    public function insert_hasil_saw($hasil_akhir_saw = [])
+    {
+        $result = $this->db->insert('hasil_saw', $hasil_akhir_saw);
+        return $result;
+    }
+
     public function hapus_hasil()
     {
         $query = $this->db->query("TRUNCATE TABLE hasil;");
+        return $query;
+    }
+
+    public function hapus_hasil_saw()
+    {
+        $query = $this->db->query("TRUNCATE TABLE hasil_saw;");
         return $query;
     }
 }

@@ -141,7 +141,7 @@
 		<div class="card-body">
 			<div class="table-responsive">
 				<table class="table table-bordered">
-					<?= $list_data4 ?>
+					<!-- <?= $list_data4 ?> -->
 				</table>
 				<?= $list_data5 ?>
 			</div>

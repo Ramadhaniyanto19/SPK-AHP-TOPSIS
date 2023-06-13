@@ -58,4 +58,12 @@ class Alternatif_model extends CI_Model
         $query = $this->db->get('kelas');
         return $query->row();
     }
+
+
+        public function export($id_kelas)
+    {
+        $query = $this->db->query("SELECT a.kelas, k.nama FROM alternatif as a JOIN kelas as k ON a.id_kelas = k.id_kelas WHERE id_kelas = '$id_kelas')");
+        return $query->result();
+    }
+
 }

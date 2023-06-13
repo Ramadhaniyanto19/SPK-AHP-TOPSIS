@@ -5,6 +5,12 @@
 
 	<div class="flex">
 		<a href="<?= base_url('Alternatif/create'); ?>" class="btn btn-success"> <i class="fa fa-plus"></i> Tambah Data </a>
+			<!-- <a href="<?= base_url('Alternatif/export'); ?>" class="btn btn-primary btn-icon-split ">
+				<span class="icon text-white-50">
+					<i class="fas fa-file-download"></i>
+				</span>
+				<span class="text">Format Excel </span>
+			</a> -->
 		<!-- <a href="#" class="btn btn-primary"> <span class="icon text-white-50">
 				<i class="fas fa-download"></i>
 			</span> Ekspor Data </a> -->

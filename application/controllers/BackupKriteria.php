@@ -165,7 +165,7 @@
 
 					$data['list_data'] = $this->tampil_data_1($matrik_kriteria, $jumlah_kolom);
 					$data['list_data2'] = $this->tampil_data_2($matrik_normalisasi, $prioritas);
-					$data['list_data3'] = $this->tampil_data_3($matrik_normalisasi);
+					$data['list_data3'] = $this->tampil_data_3($matrik_baris, $jumlah_matrik_baris);
 					$list_data = $this->tampil_data_4($jumlah_matrik_baris, $prioritas, $hasil_tabel_konsistensi);
 					$data['list_data4'] = $list_data[0];
 					$data['list_data5'] = $list_data[1];
@@ -301,38 +301,23 @@
 			return $matrik_baris;
 		}
 
-		public function ahp_get_jumlah_matrik_baris($matrik_normalisasi)
-			{
-					$jumlah_baris = array();
-					 
-					for ($i = 0; $i < count($matrik_normalisasi); $i++) {
-						$jumlah_baris[$i] = 0;
-
-						for ($j = 0; $j < count($matrik_normalisasi[$i]); $j++) {
-							$jumlah_baris[$i] += $matrik_normalisasi[$i][$j];
-						}
+		public function ahp_get_jumlah_matrik_baris($matrik_baris)
+		{
+			$jumlah_baris = array();
+			for ($i = 0; $i < count($matrik_baris); $i++) {
+				$jumlah_baris[$i] = 0;
+				for ($ii = 0; $ii < count($matrik_baris); $ii++) {
+					$jumlah_baris[$i] = $jumlah_baris[$i] + $matrik_baris[$i][$ii];
 				}
-
-			return $jumlah_baris;
 			}
+			return $jumlah_baris;
+		}
 
-		// public function ahp_get_jumlah_matrik_baris($matrik_baris)
-		// {
-		// 	$jumlah_baris = array();
-		// 	for ($i = 0; $i < count($matrik_baris); $i++) {
-		// 		$jumlah_baris[$i] = 0;
-		// 		for ($ii = 0; $ii < count($matrik_baris); $ii++) {
-		// 			$jumlah_baris[$i] = $jumlah_baris[$i] + $matrik_baris[$i][$ii];
-		// 		}
-		// 	}
-		// 	return $jumlah_baris;
-		// }
-
-		public function ahp_get_tabel_konsistensi($matrik, $prioritas)
+		public function ahp_get_tabel_konsistensi($jumlah_matrik_baris, $prioritas)
 		{
 			$jumlah = array();
-			for ($i = 0; $i < count($matrik); $i++) {
-				$jumlah[$i] = $matrik[$i] + $prioritas[$i];
+			for ($i = 0; $i < count($jumlah_matrik_baris); $i++) {
+				$jumlah[$i] = $jumlah_matrik_baris[$i] + $prioritas[$i];
 			}
 			return $jumlah;
 		}
@@ -423,31 +408,27 @@
 			return $list_data2;
 		}
 
-		public function tampil_data_3($matrik_normalisasi)
+		public function tampil_data_3($matrik_baris, $jumlah_matrik_baris)
 		{
 			$kriteria = $this->Kriteria_model->get_all_kriteria()->result();
-			// --- matriks nilai kriteria
+			// --- matriks penjumlahan setiap baris
 			$list_data3 = '';
 			$list_data3 .= '<tr><td></td>';
 			foreach ($kriteria as $row) {
 				$list_data3 .= '<td class="text-center">' . $row->kode_kriteria . '</td>';
 			}
 			$list_data3 .= '<td class="text-center font-weight-bold">Jumlah</td>';
-			// $list_data3 .= '<td class="text-center font-weight-bold">Prioritas</td>';
 			$list_data3 .= '</tr>';
 			$i = 0;
 			foreach ($kriteria as $row) {
 				$list_data3 .= '<tr>';
 				$list_data3 .= '<td>' . $row->kode_kriteria . '</td>';
-				$jumlah = 0;
 				$ii = 0;
 				foreach ($kriteria as $row2) {
-					$list_data3 .= '<td class="text-center">' . $matrik_normalisasi[$i][$ii] . '</td>';
-					$jumlah += $matrik_normalisasi[$i][$ii];
+					$list_data3 .= '<td class="text-center">' . $matrik_baris[$i][$ii] . '</td>';
 					$ii++;
 				}
-				$list_data3 .= '<td class="text-center font-weight-bold">' . $jumlah . '</td>';
-				// $list_data3 .= '<td class="text-center font-weight-bold">' . $prioritas[$i] . '</td>';
+				$list_data3 .= '<td class="text-center font-weight-bold">' . $jumlah_matrik_baris[$i] . '</td>';
 				$list_data3 .= '</tr>';
 				$i++;
 			}
@@ -483,7 +464,7 @@
 			} else {
 				$ir = $ir[14];
 			}
-			$cr = number_format($ci / $ir, 4);
+			$cr = number_format($ci / $ir, 5);
 
 			$list_data5 = '';
 			$list_data5 .= '<table class="table">
@@ -493,11 +474,11 @@
 			</tr>
 			<tr>
 				<td width="100">λ maks</td>
-				<td>= ' . number_format($lambda_maks, 3) . '</td>
+				<td>= ' . number_format($lambda_maks, 5) . '</td>
 			</tr>
 			<tr>
 				<td width="100">CI</td>
-				<td>= ' . number_format($ci, 3) . '</td>
+				<td>= ' . number_format($ci, 5) . '</td>
 			</tr>
 			<tr>
 				<td width="100">CR</td>

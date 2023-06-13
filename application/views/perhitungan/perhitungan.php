@@ -1,124 +1,112 @@
 <?php
 $this->load->view('layouts/header_admin');
 
-//Matrix Keputusan (X)
+// Matrix Keputusan (X)
 $matriks_x = array();
-foreach ($alternatifs as $alternatif) :
-	foreach ($kriterias as $kriteria) :
+foreach ($alternatifs as $alternatif) {
+    foreach ($kriterias as $kriteria) {
+        $id_alternatif = $alternatif->id_alternatif;
+        $id_kriteria = $kriteria->id_kriteria;
 
-		$id_alternatif = $alternatif->id_alternatif;
-		$id_kriteria = $kriteria->id_kriteria;
+        $data_pencocokan = $this->Perhitungan_model->data_nilai($id_alternatif, $id_kriteria);
+        if (!is_null($data_pencocokan)) {
+            $nilai = $data_pencocokan['nilai'];
+            $matriks_x[$id_kriteria][$id_alternatif] = $nilai;
+        } else {
+            $matriks_x[$id_kriteria][$id_alternatif] = 0;
+        }
+    }
+}
 
-		$data_pencocokan = $this->Perhitungan_model->data_nilai($id_alternatif, $id_kriteria);
-		if (!is_null($data_pencocokan)) {
-			$nilai = $data_pencocokan['nilai'];
-			$matriks_x[$id_kriteria][$id_alternatif] = $nilai;
-		} else {
-
-			$matriks_x[$id_kriteria][$id_alternatif] = 0;
-		}
-	endforeach;
-endforeach;
-
-//Matriks Ternormalisasi (R)
+// Matriks Ternormalisasi (R)
 $matriks_r = array();
-foreach ($matriks_x as $id_kriteria => $penilaians) :
+foreach ($matriks_x as $id_kriteria => $penilaians) {
+    $jumlah_kuadrat = 0;
+    foreach ($penilaians as $penilaian) {
+        $jumlah_kuadrat += pow($penilaian, 2);
+    }
+    $akar_kuadrat = sqrt($jumlah_kuadrat);
 
-	$jumlah_kuadrat = 0;
-	foreach ($penilaians as $penilaian) :
-		$jumlah_kuadrat += pow($penilaian, 2);
-	endforeach;
-	$akar_kuadrat = sqrt($jumlah_kuadrat);
+    foreach ($penilaians as $id_alternatif => $penilaian) {
+        $matriks_r[$id_kriteria][$id_alternatif] = $penilaian / $akar_kuadrat;
+    }
+}
 
-	foreach ($penilaians as $id_alternatif => $penilaian) :
-		$matriks_r[$id_kriteria][$id_alternatif] = $penilaian / $akar_kuadrat;
-	endforeach;
 
-endforeach;
-
-//Matriks Y
+// Matriks Y
 $matriks_y = array();
-foreach ($alternatifs as $alternatif) :
-	foreach ($kriterias as $kriteria) :
+foreach ($alternatifs as $alternatif) {
+    foreach ($kriterias as $kriteria) {
+        $bobot = $kriteria->bobot;
+        $id_alternatif = $alternatif->id_alternatif;
+        $id_kriteria = $kriteria->id_kriteria;
 
-		$bobot = $kriteria->bobot;
-		$id_alternatif = $alternatif->id_alternatif;
-		$id_kriteria = $kriteria->id_kriteria;
+        $nilai_r = $matriks_r[$id_kriteria][$id_alternatif];
+        $matriks_y[$id_kriteria][$id_alternatif] = $bobot * $nilai_r;
+    }
+}
 
-		$nilai_r = $matriks_r[$id_kriteria][$id_alternatif];
-		$matriks_y[$id_kriteria][$id_alternatif] = $bobot * $nilai_r;
-
-	endforeach;
-endforeach;
-
-//Solusi Ideal Positif & Negarif
+// Solusi Ideal Positif & Negatif
 $solusi_ideal_positif = array();
 $solusi_ideal_negatif = array();
-foreach ($kriterias as $kriteria) :
+foreach ($kriterias as $kriteria) {
+    $id_kriteria = $kriteria->id_kriteria;
+    $type_kriteria = $kriteria->jenis;
 
-	$id_kriteria = $kriteria->id_kriteria;
-	$type_kriteria = $kriteria->jenis;
+    $nilai_max = max($matriks_y[$id_kriteria]);
+    $nilai_min = min($matriks_y[$id_kriteria]);
 
-	$nilai_max = @(max($matriks_y[$id_kriteria]));
-	$nilai_min = @(min($matriks_y[$id_kriteria]));
+    if ($type_kriteria == 'Benefit') {
+        $s_i_p = $nilai_max;
+        $s_i_n = $nilai_min;
+    } elseif ($type_kriteria == 'Cost') {
+        $s_i_p = $nilai_min;
+        $s_i_n = $nilai_max;
+    }
 
-	if ($type_kriteria == 'Benefit') :
-		$s_i_p = $nilai_max;
-		$s_i_n = $nilai_min;
-	elseif ($type_kriteria == 'Cost') :
-		$s_i_p = $nilai_min;
-		$s_i_n = $nilai_max;
-	endif;
+    $solusi_ideal_positif[$id_kriteria] = $s_i_p;
+    $solusi_ideal_negatif[$id_kriteria] = $s_i_n;
+}
 
-	$solusi_ideal_positif[$id_kriteria] = $s_i_p;
-	$solusi_ideal_negatif[$id_kriteria] = $s_i_n;
-
-endforeach;
-
-//Jarak Ideal Positif & Negatif
+// Jarak Ideal Positif & Negatif
 $jarak_ideal_positif = array();
 $jarak_ideal_negatif = array();
-foreach ($alternatifs as $alternatif) :
+foreach ($alternatifs as $alternatif) {
+    $id_alternatif = $alternatif->id_alternatif;
+    $jumlah_kuadrat_jip = 0;
+    $jumlah_kuadrat_jin = 0;
 
-	$id_alternatif = $alternatif->id_alternatif;
-	$jumlah_kuadrat_jip = 0;
-	$jumlah_kuadrat_jin = 0;
+    // Mencari penjumlahan kuadrat
+    foreach ($matriks_y as $id_kriteria => $penilaians) {
+        $hsl_pengurangan_jip = $penilaians[$id_alternatif] - $solusi_ideal_positif[$id_kriteria];
+        $hsl_pengurangan_jin = $penilaians[$id_alternatif] - $solusi_ideal_negatif[$id_kriteria];
 
-	// Mencari penjumlahan kuadrat
-	foreach ($matriks_y as $id_kriteria => $penilaians) :
+        $jumlah_kuadrat_jip += pow($hsl_pengurangan_jip, 2);
+        $jumlah_kuadrat_jin += pow($hsl_pengurangan_jin, 2);
+    }
 
-		$hsl_pengurangan_jip = $penilaians[$id_alternatif] - $solusi_ideal_positif[$id_kriteria];
-		$hsl_pengurangan_jin = $penilaians[$id_alternatif] - $solusi_ideal_negatif[$id_kriteria];
+    // Mengakarkan hasil penjumlahan kuadrat
+    $akar_kuadrat_jip = sqrt($jumlah_kuadrat_jip);
+    $akar_kuadrat_jin = sqrt($jumlah_kuadrat_jin);
 
-		$jumlah_kuadrat_jip += pow($hsl_pengurangan_jip, 2);
-		$jumlah_kuadrat_jin += pow($hsl_pengurangan_jin, 2);
+    // Memasukkan ke array matriks jip & jin
+    $jarak_ideal_positif[$id_alternatif] = $akar_kuadrat_jip;
+    $jarak_ideal_negatif[$id_alternatif] = $akar_kuadrat_jin;
+}
 
-	endforeach;
-
-	// Mengakarkan hasil penjumlahan kuadrat
-	$akar_kuadrat_jip = sqrt($jumlah_kuadrat_jip);
-	$akar_kuadrat_jin = sqrt($jumlah_kuadrat_jin);
-
-	// Memasukkan ke array matriks jip & jin
-	$jarak_ideal_positif[$id_alternatif] = $akar_kuadrat_jip;
-	$jarak_ideal_negatif[$id_alternatif] = $akar_kuadrat_jin;
-
-endforeach;
-
-//Kedekatan Relatif Terhadap Solusi Ideal (V)
+// Kedekatan Relatif Terhadap Solusi Ideal (V)
 $kedekatan_relatif = array();
-foreach ($alternatifs as $alternatif) :
+foreach ($alternatifs as $alternatif) {
+    $s_negatif = $jarak_ideal_negatif[$alternatif->id_alternatif];
+    $s_positif = $jarak_ideal_positif[$alternatif->id_alternatif];
 
-	$s_negatif = $jarak_ideal_negatif[$alternatif->id_alternatif];
-	$s_positif = $jarak_ideal_positif[$alternatif->id_alternatif];
+    $nilai_v = $s_negatif / ($s_positif + $s_negatif);
 
-	$nilai_v = @($s_negatif / ($s_positif + $s_negatif));
+    $kedekatan_relatif[$alternatif->id_alternatif]['id_alternatif'] = $alternatif->id_alternatif;
+    $kedekatan_relatif[$alternatif->id_alternatif]['nama'] = $alternatif->nama;
+    $kedekatan_relatif[$alternatif->id_alternatif]['nilai'] = $nilai_v;
+}
 
-	$kedekatan_relatif[$alternatif->id_alternatif]['id_alternatif'] = $alternatif->id_alternatif;
-	$kedekatan_relatif[$alternatif->id_alternatif]['nama'] = $alternatif->nama;
-	$kedekatan_relatif[$alternatif->id_alternatif]['nilai'] = $nilai_v;
-
-endforeach;
 ?>
 
 <div class="d-sm-flex align-items-center justify-content-between mb-4">

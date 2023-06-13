@@ -5,14 +5,14 @@
 	<h1 class="h3 mb-0 text-gray-800"><i class="fas fa-fw fa-edit"></i> Data Penilaian</h1>
 	<?php if ($data_excel > 0) : ?>
 		<div class="flex">
-			<a href="<?= base_url('Penilaian/format_excel'); ?>" class="btn btn-primary btn-icon-split ">
+			<!-- <a href="<?= base_url('Penilaian/format_excel'); ?>" class="btn btn-primary btn-icon-split ">
 				<span class="icon text-white-50">
 					<i class="fas fa-file-download"></i>
 				</span>
 				<span class="text">Format Excel </span>
-			</a>
+			</a> -->
 			<a href="<?= base_url('Penilaian/export'); ?>" class="btn btn-primary btn-icon-split ">
-				<span class="icon bg-dark">
+				<span class="icon text-white-50">
 					<i class="fas fa-file-download"></i>
 				</span>
 				<span class="text">Format Excel </span>
