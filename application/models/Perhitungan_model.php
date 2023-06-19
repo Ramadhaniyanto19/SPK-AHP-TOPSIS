@@ -10,9 +10,10 @@ class Perhitungan_model extends CI_Model
         $query = $this->db->get('kriteria');
         return $query->result();
     }
-    public function get_alternatif()
+    public function get_alternatif($id_kelas)
     {
-        $query = $this->db->get('alternatif');
+        $query = $this->db->query("SELECT * FROM alternatif where id_kelas = '$id_kelas'");
+        // $query = $this->db->get('alternatif');
         return $query->result();
     }
 
@@ -46,7 +47,6 @@ class Perhitungan_model extends CI_Model
         $query = $this->db->get('kelas');
         return $query->row();
     }
-
 
     public function insert_hasil($hasil_akhir = [])
     {

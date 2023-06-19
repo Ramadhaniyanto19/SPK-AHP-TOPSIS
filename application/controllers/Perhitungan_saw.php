@@ -24,10 +24,11 @@ class Perhitungan_saw extends CI_Controller
         <?php
         }
 
+        $id_kelas = $this->session->userdata('id_kelas');
         $data = [
             'page' => "Perhitungan_saw",
             'kriterias' => $this->Perhitungan_model->get_kriteria(),
-            'alternatifs' => $this->Perhitungan_model->get_alternatif(),
+            'alternatifs' => $this->Perhitungan_model->get_alternatif($id_kelas),
         ];
 
         $this->load->view('Perhitungan_saw/perhitungan_saw', $data);

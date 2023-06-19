@@ -11,10 +11,6 @@ class Perhitungan extends CI_Controller
         $this->load->library('pagination');
         $this->load->library('form_validation');
         $this->load->model('Perhitungan_model');
-    }
-
-    public function index()
-    {
         if ($this->session->userdata('id_user_level') != "1") {
         ?>
             <script type="text/javascript">
@@ -23,11 +19,15 @@ class Perhitungan extends CI_Controller
             </script>
         <?php
         }
+    }
 
+    public function index()
+    {
+        $id_kelas = $this->session->userdata('id_kelas');
         $data = [
             'page' => "Perhitungan",
             'kriterias' => $this->Perhitungan_model->get_kriteria(),
-            'alternatifs' => $this->Perhitungan_model->get_alternatif(),
+            'alternatifs' => $this->Perhitungan_model->get_alternatif($id_kelas),
         ];
 
         $this->load->view('Perhitungan/perhitungan', $data);
