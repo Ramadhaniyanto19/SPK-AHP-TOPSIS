@@ -107,6 +107,7 @@ foreach ($alternatifs as $alternatif) {
     $kedekatan_relatif[$alternatif->id_alternatif]['nilai'] = $nilai_v;
 }
 
+
 ?>
 
 <div class="d-sm-flex align-items-center justify-content-between mb-4">
